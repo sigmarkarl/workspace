@@ -10,7 +10,6 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.media.client.Video;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -48,7 +47,7 @@ public class VirtualMirror implements EntryPoint {
 	
 	@Override
 	public void onModuleLoad() {
-		final RootPanel		rp = RootPanel.get();
+		final RootPanel		rp = RootPanel.get("cont");
 		
 		Style st = rp.getElement().getStyle();
 		st.setBorderWidth( 0.0, Unit.PX );
