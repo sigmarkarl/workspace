@@ -188,7 +188,7 @@ public class Convertica implements EntryPoint {
 						
 						Canvas 		canvas = Canvas.createIfSupported();
 						
-					}
+					}				
 				});
 				fr.readAsArrayBuffer( blob );*/
 				
