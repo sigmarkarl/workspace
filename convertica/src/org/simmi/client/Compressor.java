@@ -66,14 +66,13 @@ public class Compressor implements EntryPoint {
 	    return new Blob( [view], {"type" : "application\/zip" } );
 	}-*/;
 	
-	public native void addFile( Blob blob, String fn, int nf ) /*-{
+	public native void addFile( Blob blob, String fn, int nf ) /*-{		
 		var s = this;		
 		if( $wnd.zip == null ) $wnd.zip = new $wnd.Zlib.Zip();
 		
 		var fileReader = new FileReader();
 		fileReader.onload = function() {
-			//$wnd.console.log( "flen " + this.result.byteLength );
-		    $wnd.zip.addFile( this.result, {
+		    $wnd.zip.addFile( new Uint8Array(this.result), {
 		    	filename: $wnd.stringToByteArray( fn )
 			});
 			
@@ -104,6 +103,9 @@ public class Compressor implements EntryPoint {
 	}-*/;
 	
 	public void download( String filename ) {
+		int i = filename.lastIndexOf('.');
+		if( i != -1 ) filename = filename.substring(0,i);
+		
 		Blob 		blob = compress();
 		String		url = createObjectUrl( blob );
 		
@@ -153,17 +155,9 @@ public class Compressor implements EntryPoint {
 				int nf = numberOfFiles( event.getDataTransfer() );
 				Blob 				blob = readFile( event.getDataTransfer(), fi );
 				while( blob != null ) {
-					String fn = getFilename( blob );
-					int i = fn.lastIndexOf('.');
-					
-					final String filename;
-					if( i == -1 ) filename = fn;
-					else filename = fn.substring(0,i);
-					
-					//Browser.getWindow().getConsole().log("erm2");
-					
-					addFile( blob, filename, nf );
-					blob = readFile( event.getDataTransfer(), fi );
+					String fn = getFilename( blob );					
+					addFile( blob, fn, nf );
+					blob = readFile( event.getDataTransfer(), ++fi );
 				}
 			}
 		});
