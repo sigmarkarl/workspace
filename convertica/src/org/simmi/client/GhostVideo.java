@@ -19,11 +19,8 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import elemental.client.Browser;
 import elemental.dom.LocalMediaStream;
 import elemental.html.Blob;
-import elemental.html.Navigator;
-import elemental.html.NavigatorUserMediaSuccessCallback;
 import elemental.util.Mappable;
 
 public class GhostVideo implements EntryPoint {
@@ -131,6 +128,16 @@ public class GhostVideo implements EntryPoint {
 		$wnd.snapdata = idata.data;
 	}-*/;
 	
+	public native void getUserMedia( VideoElement v ) /*-{
+		$wnd.navigator.getUserMedia = ($wnd.navigator.getUserMedia || $wnd.navigator.webkitGetUserMedia || $wnd.navigator.mozGetUserMedia || $wnd.navigator.msGetUserMedia);
+		//$wnd.console.log( 'ermerm' + $wnd.navigator.getUserMedia );
+		$wnd.navigator.getUserMedia( {video : true}, function( stream ) {
+			var strurl = $wnd.URL.createObjectURL( stream );
+			v.src = strurl;
+			v.play();
+		});
+	}-*/;
+	
 	@Override
 	public void onModuleLoad() {
 		final RootPanel		rp = RootPanel.get("cont");
@@ -174,10 +181,11 @@ public class GhostVideo implements EntryPoint {
 		
 		addPlayListener( (VideoElement)VideoElement.as(video.getElement()), canvas.getCanvasElement(), back.getCanvasElement(), context, bcontext, 640, 480 );
 		
-		final elemental.html.Window 		wnd = Browser.getWindow();
-		final Navigator 					nvg = wnd.getNavigator();
+		//final elemental.html.Window 		wnd = Browser.getWindow();
+		//final Navigator 					nvg = wnd.getNavigator();
 		
-		nvg.webkitGetUserMedia( video(), new NavigatorUserMediaSuccessCallback() {
+		getUserMedia( video.getVideoElement() );
+		/*nvg.webkitGetUserMedia( video(), new NavigatorUserMediaSuccessCallback() {
 			@Override
 			public boolean onNavigatorUserMediaSuccessCallback(LocalMediaStream stream) {
 				String url = getObjectUrl( stream );
@@ -186,7 +194,7 @@ public class GhostVideo implements EntryPoint {
 				
 				return true;
 			}
-		});
+		});*/
 		
 		final Button	b = new Button("Snapshot");
 		b.addClickHandler( new ClickHandler() {
